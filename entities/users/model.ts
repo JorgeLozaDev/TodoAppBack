@@ -17,6 +17,11 @@ const usuarioSchema = new mongoose.Schema(
       required: true,
       select: false,
     },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
   },
   {
     versionKey: false,
@@ -24,6 +29,6 @@ const usuarioSchema = new mongoose.Schema(
   }
 );
 
-const Usuario = mongoose.model('Usuario', usuarioSchema);
+const Usuario = mongoose.model("Usuario", usuarioSchema);
 
 export default Usuario;
