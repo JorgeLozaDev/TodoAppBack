@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "../../config/mongoose";
 
 const usuarioSchema = new mongoose.Schema(
   {
