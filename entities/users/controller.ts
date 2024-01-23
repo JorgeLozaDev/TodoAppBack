@@ -35,7 +35,7 @@ export const signIn = async (
     // Crear un nuevo usuario con el rol asignado
     const newUser = new User({
       email,
-      username,
+      nombre: username,
       password: hashedPassword,
     });
     await newUser.save();
