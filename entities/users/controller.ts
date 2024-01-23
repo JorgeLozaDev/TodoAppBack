@@ -4,7 +4,7 @@ import CONF from "../../core/config";
 import bcrypt from "bcrypt";
 import { validateRequiredFields } from "../../core/helpers/comun";
 
-export const singIn = async (
+export const signIn = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -18,9 +18,6 @@ export const singIn = async (
 
     // Verificar campos requeridos utilizando la función de validación
     validateRequiredFields(req.body, camposRequeridos);
-
-    // Asignar el rol por defecto si "role" viene vacío
-    const userRole = "user";
 
     // Encriptar la contraseña antes de almacenarla en la base de datos
     const hashedPassword = await bcrypt.hash(password, CONF.BCRYTP_LOOP);
@@ -40,7 +37,6 @@ export const singIn = async (
       email,
       username,
       password: hashedPassword,
-      role: userRole,
     });
     await newUser.save();
 
