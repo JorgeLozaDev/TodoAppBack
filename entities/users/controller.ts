@@ -45,3 +45,32 @@ export const signIn = async (
     next(error);
   }
 };
+
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Obtener datos del cuerpo de la solicitud
+    const { email, password } = req.body;
+  
+    // Definir campos requeridos
+    const camposRequeridos = ["email", "password"];
+
+    // Verificar campos requeridos utilizando la función de validación
+    validateRequiredFields(req.body, camposRequeridos);
+
+    // Buscar al usuario por nombre de usuario
+    const user = await User.findOne({ email }).select("+password");
+
+    if (!user) {
+      // Lanza un error con un código de estado HTTP personalizado
+      const error = new Error("El usuario no existe");
+      (error as any).status = 404;
+      throw error;
+    }
+  } catch (error) {
+    next(error);
+  }
+};
