@@ -64,4 +64,4 @@ const errorHandler = (
   res.status(statusCode).json({ message: err.message });
 };
 
-export = errorHandler;
+export default errorHandler;
