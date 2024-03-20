@@ -13,6 +13,7 @@ export const signIn = async (
     // Obtener datos del cuerpo de la solicitud
     const { email, username, password } = req.body;
 
+
     // Definir campos requeridos
     const camposRequeridos = ["email", "username", "password"];
 
@@ -66,10 +67,9 @@ export const login = async (
 
     if (!user) {
       // Lanza un error con un código de estado HTTP personalizado
-      const error = new Error("El usuario no existe");
-      (error as any).status = 404;
-      throw error;
+  
     }
+
   } catch (error) {
     next(error);
   }
