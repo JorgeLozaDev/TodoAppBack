@@ -19,7 +19,7 @@ export const validateRequiredFields = (data, requiredFields) => {
           Object.keys(fieldValue).length === 0))
     ) {
       const error = new Error(
-        `El campo '${field}' es obligatorio y debe ser una cadena, un array no vacío o un objeto no vacío.`
+        `El campo '${field}' es obligatorio.`
       );
       (error as any).status = 400;
       throw error;
