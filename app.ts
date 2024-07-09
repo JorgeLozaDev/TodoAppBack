@@ -1,19 +1,25 @@
 import cors from "cors";
 import "dotenv/config";
 import express, { Request, Response } from "express";
-
-
-const app = express();
-app.use(express.json());
-
 // ROUTER
 // import godsRouter from "./entities/gods/router";
 import usersRouter from "./entities/users/router";
 import errorHandler from "./middlewares/errorHandler";
 
-app.use(cors());
+const app = express();
+app.use(express.json());
+
+
+app.use(
+  cors() 
+  //   {
+  //   origin: "http://localhost:5173",
+  //   methods: ["GET", "POST", "PUT", "DELETE"],
+  //   credentials: true,
+  // }
+);
 app.get("/", (Request, Response) => {
-  Response.send("Healcheck: ok");
+  Response.send("Healcheck: ok1"); 
 });
 // app.use("/gods/", godsRouter);
 app.use("/user/", usersRouter);

@@ -8,6 +8,10 @@ mongoose
 
   .then(async () => {
     console.log("Conectado correctamente a la BBDD");
+    console.log(
+      `Conectando a la base de datos: ${CONF.DDBB_URL}${CONF.DDBB_NAME}`
+    );
+ 
     const adminExist = await User.findOne({ role: "admin" });
     if (!adminExist) {
       const hashedPassword = await bcrypt.hash(
@@ -24,7 +28,7 @@ mongoose
       await adminUser.save();
       console.log("Usuario admin creado");
     }
-  }) 
+  })
   .catch((e) => console.log("error" + e));
 
 export = mongoose;
