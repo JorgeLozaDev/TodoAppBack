@@ -116,3 +116,64 @@ export const getProfile = async (
     next(error);
   }
 };
+
+export const updateProfile = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, nombre, password } = req.body;
+    const userIdFromToken = req.user.id; // Obtén el ID del usuario autenticado desde el middleware
+    const userRole = req.user.role; // Obtén el rol del usuario autenticado
+
+    // Buscar al usuario por los campos proporcionados (name, lastname, email, username)
+    const userFound = await User.findOne({ email });
+
+    if (!userFound) {
+      const error = new Error("Usuario no encontrado");
+      (error as any).status = 404;
+      throw error;
+    }
+
+    // Verificar si el usuario actual es el propietario del perfil o es un superadmin
+    if (userRole !== "admin" && userFound._id.toString() !== userIdFromToken) {
+      const error = new Error("No tienes permiso para modificar este perfil");
+      (error as any).status = 403;
+      throw error;
+    }
+
+    // Definir campos requeridos
+    const camposRequeridos = ["username"];
+
+    userFound.nombre = nombre;
+    // Si la contraseña cambia, puedes volver a generar el token
+    if (password && password.trim() != "") {
+      // Encripta la nueva contraseña antes de almacenarla en la base de datos
+      const hashedPassword = await bcrypt.hash(password, CONF.BCRYTP_LOOP);
+      userFound.password = hashedPassword;
+
+      // Genera y firma un nuevo token JWT
+      const token = jwt.sign(
+        {
+          id: userFound._id,
+          username: userFound.nombre,
+          role: userFound.role,
+        },
+        CONF.JWT_SECRET,
+        { expiresIn: "24h" }
+      );
+
+      res
+        .status(200)
+        .json({ message: "Datos personales actualizados con éxito", token });
+    } else {
+      await userFound.save();
+      res
+        .status(200)
+        .json({ message: "Datos personales actualizados con éxito" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
