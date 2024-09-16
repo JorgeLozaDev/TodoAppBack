@@ -166,13 +166,17 @@ export const updateProfile = async (
 
       res
         .status(200)
-        .json({ message: "Datos personales actualizados con éxito, volveras al login para ingresar con la nueva contraseña", token });
+        .json({
+          message:
+            "Datos personales actualizados con éxito, volveras al login para ingresar con la nueva contraseña",
+          token,
+        });
     } else {
-      await userFound.save();
       res
         .status(200)
         .json({ message: "Datos personales actualizados con éxito" });
     }
+    await userFound.save();
   } catch (error) {
     next(error);
   }
