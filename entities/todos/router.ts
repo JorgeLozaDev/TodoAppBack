@@ -4,7 +4,6 @@ import { addTodo } from "./controller";
 
 const router = express.Router();
 
-router.post("/addTodo", addTodo);
-
+router.post("/addTodo", authMiddleware, addTodo);
 
 export default router;
