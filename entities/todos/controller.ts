@@ -50,3 +50,25 @@ export const addTodo = async (
     next(error);
   }
 };
+
+export const getAllTodosUser = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.user.id; // Obtén el rol del usuario autenticado
+
+    // Obtener los to-dos del usuario
+    const allTodos = await Todo.find({ usuario: userId })
+      .select(
+        "tarea descripcion fechaInicio fechaFin completado eliminado estado prioridad"
+      )
+      .sort({ fechaFin: 1 })
+      .exec();
+
+    res.status(200).json({ allTodos });
+  } catch (error) {
+    next(error);
+  }
+};
