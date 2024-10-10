@@ -60,7 +60,7 @@ export const getAllTodosUser = async (
     const userId = req.user.id; // Obtén el rol del usuario autenticado
 
     // Obtener los to-dos del usuario
-    const allTodos = await Todo.find({ usuario: userId })
+    const allTodos = await Todo.find({ usuario: userId, eliminado: false })
       .select(
         "tarea descripcion fechaInicio fechaFin completado eliminado estado prioridad"
       )
@@ -68,6 +68,29 @@ export const getAllTodosUser = async (
       .exec();
 
     res.status(200).json({ allTodos });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteTodos = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { ids } = req.body;
+    const userId = req.user.id; // Obtén el ID del usuario autenticado
+
+    // Actualiza los todos marcándolos como eliminados solo para el usuario autenticado
+    const result = await Todo.updateMany(
+      { _id: { $in: ids }, usuario: userId }, // Cambiado de userId a usuario
+      { $set: { eliminado: true } }
+    );
+
+    res
+      .status(200)
+      .send({ message: "Tareas marcadas como eliminadas correctamente" });
   } catch (error) {
     next(error);
   }
