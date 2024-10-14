@@ -95,3 +95,20 @@ export const deleteTodos = async (
     next(error);
   }
 };
+
+export const todoDetails = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const todoId = req.params.id;
+
+    // Busca el usuario por ID y selecciona los campos deseados
+    const user = await Todo.findById(todoId);
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
