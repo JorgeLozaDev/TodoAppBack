@@ -112,3 +112,53 @@ export const todoDetails = async (
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
+// Controlador para actualizar datos personales del usuario
+export const updateTodo = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { tarea, descripcion, tiempo, tiempoFin, estado, prioridad, id } =
+      req.body;
+    const userIdFromToken = req.user.id;
+    console.log(req.body);
+
+    const todoFound = await Todo.findOne({ _id: id });
+
+    if (!todoFound) {
+      const error = new Error("Todo no encontrado");
+      (error as any).status = 404;
+      throw error;
+    }
+
+    // Definir campos requeridos
+    const camposRequeridos = [
+      "tarea",
+      "descripcion",
+      "tiempo",
+      "tiempoFin",
+      "estado",
+      "prioridad",
+      "id",
+    ];
+
+    // // Verificar campos requeridos utilizando la función de validación
+    validateRequiredFields(req.body, camposRequeridos);
+
+    todoFound.tarea = tarea;
+    todoFound.descripcion = descripcion;
+    todoFound.fechaInicio = tiempo;
+    todoFound.fechaFin = tiempoFin;
+    todoFound.estado = estado;
+    todoFound.prioridad = prioridad;
+
+    await todoFound.save();
+    res
+      .status(200)
+      .json({ message: "Datos personales actualizados con éxito" });
+  } catch (error) {
+    next(error);
+  }
+};
